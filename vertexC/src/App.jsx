@@ -1,15 +1,34 @@
 import { useState } from 'react'
 import './App.css'
 import { Header } from '../../components/Header'
-import { FindCripto } from '../../components/Find'
+import { FindCrypto } from '../../components/FindCrypto'
 import axios from 'axios'
+import { CryptoInfo } from '../../components/CryptoInfo'
+
+
+
+
+
+
 const  App = () => {
+  const [cryptoData, setCryptoData] = useState(null);
   
+
+  const handleDataFetch = (data) => {
+    setCryptoData(data);  
+  };
+
 
   return  (
     <>
     <Header />
-    <FindCripto />
+    <FindCrypto  onDataFetch={handleDataFetch}/>
+     <CryptoInfo  data={cryptoData}/> 
+
+
+
+
+
     </>
   )
 

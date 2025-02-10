@@ -1,17 +1,21 @@
 import { useState } from "react";
 import axios from "axios";
+import { CryptoInfo } from "./CryptoInfo";
 
 
 
-export function FindCripto() {
+export function FindCrypto({ onDataFetch }) {
   const [search, setSearch] = useState("");
-  const [data, setData] = useState(null)
-
+  const [loading, setLoading] = useState("")
+  const [error, setError] = useState(null);
 
   const API_KEY = import.meta.env.VITE_COINGECKO_API_KEY; 
 
 
   const handleSearch = async () => {
+    setLoading(true); // 
+    setError(null); // 
+  
     try {
         const response = await axios.get(
             `https://api.coingecko.com/api/v3/coins/${search.toLowerCase()}`, {
@@ -20,10 +24,12 @@ export function FindCripto() {
                 },
             }
         );
-    console.log('Data of cripto:', response.data);
-    setData(response.data)
+    
+    onDataFetch(response.data)
   } catch (error){
-    console.log('Error', error)
+    setError("Not possible to find this crypto")
+  } finally {
+    setLoading(false)
   }
 };
   return (
@@ -32,12 +38,13 @@ export function FindCripto() {
         type="text"
         value={search}
         onChange={(e) => {
-          console.log(e.target.value);
           setSearch(e.target.value);
         }}
-        placeholder="Digite o nome da cripto..."
+        placeholder="Type the name's crypto..."
       />
       <button onClick={handleSearch}>Go</button>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }
